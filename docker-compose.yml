@@ -1,0 +1,20 @@
+version: '2'
+
+services:
+  teamcity-server:
+    image: jetbrains/teamcity-server
+    volumes:
+      - ./data/server/data:/data/teamcity_server/datadir
+      - ./data/server/logs:/opt/teamcity/logs
+    ports:
+      - 8002:8111
+  teamcity-agent:
+    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - SERVER_URL=${TEAMCITY_SERVER}
+    volumes:
+      - /composer:/composer
+      - ./data/agent/1/conf:/data/teamcity_agent/conf
