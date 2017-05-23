@@ -36,22 +36,20 @@ RUN \
 
 # install docker, docker-compose
 RUN \
-    apt-get install \
-        linux-image-extra-$(uname -r) \
-        linux-image-extra-virtual \
-    && apt-get install \
+    apt-get install -y \
            apt-transport-https \
            ca-certificates \
            curl \
            software-properties-common \
+           lxc \
    && curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - \
    && add-apt-repository \
          "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
          $(lsb_release -cs) \
-         stable"
-    && apt-get update
+         stable" \
+    && apt-get update \
     && apt-get install -y docker-ce \
-    && url -L https://github.com/docker/compose/releases/download/$dockerComposeVersion/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose \
+    && curl -L https://github.com/docker/compose/releases/download/$dockerComposeVersion/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose \
     && chmod +x /usr/local/bin/docker-compose
 
 # generate localse
