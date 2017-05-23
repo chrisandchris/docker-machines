@@ -5,11 +5,13 @@ MAINTAINER chrisandchris <>
 ENV LANG=en_US.UTF-8
 ENV COMPOSER_HOME=/composer
 
+# base software packages, update system
 RUN \
     apt-get update && apt-get upgrade -y \
     && apt-get install -y wget curl python-software-properties software-properties-common \
         zip unzip mysql-client
 
+# install vagrant and plugins
 RUN \
     wget https://releases.hashicorp.com/vagrant/1.9.1/vagrant_1.9.1_x86_64.deb -O /tmp/vagrant.deb \
     && dpkg -i /tmp/vagrant.deb \
@@ -18,6 +20,7 @@ RUN \
     && wget https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box -O /tmp/dummy.img \
     && vagrant box add dummy /tmp/dummy.img
 
+# install aws-cli
 RUN \
     curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip" \
     && unzip awscli-bundle.zip \
@@ -25,15 +28,38 @@ RUN \
     && rm -rf awscli-* \
     && aws --version
 
+# install packer
 RUN \
     wget https://releases.hashicorp.com/packer/0.12.2/packer_0.12.2_linux_amd64.zip -O /tmp/packer.zip \
     && unzip /tmp/packer.zip -d /usr/local/bin \
     && chmod +x /usr/local/bin/packer
 
+# install docker, docker-compose
+RUN \
+    apt-get install \
+        linux-image-extra-$(uname -r) \
+        linux-image-extra-virtual \
+    && apt-get install \
+           apt-transport-https \
+           ca-certificates \
+           curl \
+           software-properties-common \
+   && curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - \
+   && add-apt-repository \
+         "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+         $(lsb_release -cs) \
+         stable"
+    && apt-get update
+    && apt-get install -y docker-ce \
+    && url -L https://github.com/docker/compose/releases/download/$dockerComposeVersion/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose \
+    && chmod +x /usr/local/bin/docker-compose
+
+# generate localse
 RUN \
     apt-get update \
     && apt-get install -y locales && locale-gen ${LANG}
 
+# install php
 RUN \
     add-apt-repository -y ppa:ondrej/php \
     && apt-get update \
@@ -43,6 +69,7 @@ RUN \
         php7.0-xml php7.0-memcached \
     && sed -i "s/;date.timezone =/date.timezone = UTC/" /etc/php/7.0/cli/php.ini
 
+# install phpunit and composer
 RUN \
     php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php -r "if (hash_file('SHA384', 'composer-setup.php') === '669656bab3166a7aff8a7506b8cb2d1c292f042046c5a994c43155c0be6190fa0355160742ab2e1c88d40d5be660b410') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" \
