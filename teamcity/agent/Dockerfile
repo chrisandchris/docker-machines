@@ -49,8 +49,9 @@ RUN \
          stable" \
     && apt-get update \
     && apt-get install -y docker-ce \
-    && curl -L https://github.com/docker/compose/releases/download/$dockerComposeVersion/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose \
-    && chmod +x /usr/local/bin/docker-compose
+    && curl -L https://github.com/docker/compose/releases/download/1.13.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose \
+    && chmod +x /usr/local/bin/docker-compose \
+    && echo "@reboot service docker start" >> /etc/crontab
 
 # generate localse
 RUN \
