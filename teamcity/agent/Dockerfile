@@ -76,3 +76,13 @@ RUN \
     && php -r "unlink('composer-setup.php');" \
     && wget https://phar.phpunit.de/phpunit-5.7.phar -O /usr/local/bin/phpunit \
     && chmod +x /usr/local/bin/phpunit
+
+# install sphinx, latex
+RUN \
+    apt-get install -y \
+        python-virtualenv build-essential python-dev python-pip python-setuptools \
+        libxml2-dev libxslt1-dev zlib1g-dev python-sphinx \
+        texlive-base texlive-latex-recommended \
+        texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra \
+        texlive-latex-base texlive-lang-german \
+        inkscape
