@@ -12,9 +12,9 @@ services:
     build: .
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: agent/Dockerfile
     environment:
       - SERVER_URL=${TEAMCITY_SERVER}
     volumes:
       - /composer:/composer
-      - ./data/agent/1/conf:/data/teamcity_agent/conf
+      - ./data/agent/conf:/data/teamcity_agent/conf
