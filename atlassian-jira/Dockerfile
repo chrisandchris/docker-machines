@@ -4,26 +4,34 @@ MAINTAINER chrisandchris
 
 WORKDIR /var/atlassian/jira
 
-ENV JIRA_HOME     /var/atlassian/jira
-ENV JIRA_INSTALL  /opt/atlassian/jira
-ENV JIRA_VERSION  7.3.6
+ENV JIRA_HOME       /var/atlassian/jira
+ENV JIRA_INSTALL    /opt/atlassian/jira
+ENV JIRA_VERSION    7.3.6
+ENV SERVICE_VERSION 7.3.6
+ENV ATLASSIAN_URL   https://www.atlassian.com/software/jira/downloads/binary
 
 RUN \
     apt-get update \
     && apt-get upgrade -y \
     && apt-get install -y --no-install-recommends xmlstarlet \
     && apt-get install -y --no-install-recommends -t jessie-backports libtcnative-1 \
-    && apt-get clean \
-    && mkdir -p "${JIRA_HOME}" \
-    && mkdir -p "${JIRA_HOME}/caches/indexes" \
-    && mkdir -p "${JIRA_INSTALL}/conf/Catalina" \
-    && curl -Ls "https://www.atlassian.com/software/jira/downloads/binary/atlassian-jira-core-${JIRA_VERSION}.tar.gz" \
-        | tar -xz --directory "${JIRA_INSTALL}" --strip-components=1 --no-same-owner \
-    && curl -Ls "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.38.tar.gz" \
-        | tar -xz --directory "${JIRA_INSTALL}/lib" --strip-components=1 --no-same-owner "mysql-connector-java-5.1.38/mysql-connector-java-5.1.38-bin.jar" \
-    && sed --in-place "s/java version/openjdk version/g" "${JIRA_INSTALL}/bin/check-java.sh" \
-    && echo -e "\njira.home=$JIRA_HOME" >> "${JIRA_INSTALL}/atlassian-jira/WEB-INF/classes/jira-application.properties" \
-    && touch -d "@0" "${JIRA_INSTALL}/conf/server.xml"
+
+COPY response_jira.varfile /tmp
+COPY response_sd.varfile /tmp
+
+# Install JIRA unattended
+RUN \
+    && curl -o /tmp/jira-installer.bin -fsSL ${ATLASSIAN_URL}/atlassian-jira-software-${JIRA_VERSION}-x64.bin \
+    && curl -o /tmp/sd-installer.bin -fsSL ${ATLASSIAN_URL}/atlassian-jira-service-desk-${JIRA_VERSION}-x64.bin \
+    && chmod u+x /tmp/jira-installer.bin \
+    && chmod u+x /tmp/sd-installer.bin \
+    && sh -c "/tmp/jira-installer.bin -q -varfile /tmp/response_jira.varfile" \
+    && sh -c "/tmp/sd-installer.bin -q -varfile /tmp/response_sd.varfile" \
+    && rm /tmp/*.bin \
+    && chown -R jira:jira /var/atlassian/application-data \
+    && chown -R jira:jira /opt/atlassian/jira \
+    && rm -rf /opt/atlassian/jira/work \
+    && echo "jira.websudo.is.disabled = true" > /var/atlassian/application-data/jira-config.properties
 
 # Remove some env variables from setup, so we can set them inplace
 RUN \
@@ -33,9 +41,6 @@ RUN \
 
 COPY "docker-entrypoint.sh" "/"
 
-RUN \
-    chmod +x /docker-entrypoint.sh
+USER jira
 
-ENTRYPOINT ["/docker-entrypoint.sh"]
-
-CMD ["/opt/atlassian/jira/bin/catalina.sh", "run"]
+ENTRYPOINT ["/opt/atlassian/jira/bin/start-jira.sh", "-fg"]

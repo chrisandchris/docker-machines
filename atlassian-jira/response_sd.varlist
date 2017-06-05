@@ -1,0 +1,6 @@
+executeLauncherAction$Boolean=true
+app.install.service$Boolean=false
+sys.confirmedUpdateInstallationString=false
+existingInstallationDir=/opt/previous/jira
+sys.languageId=en
+sys.installationDir=/opt/atlassian/jira
