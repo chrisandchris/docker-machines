@@ -12,10 +12,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    volumes:
+      - ./data:/data
     ports:
       - 8081:8080
-    volumes:
-      - ./jira/data:/var/atlassian
     environment:
       - JVM_MINIMUM_MEMORY=1024m
       - JVM_MAXIMUM_MEMORY=4096m
