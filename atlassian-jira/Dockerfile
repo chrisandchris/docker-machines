@@ -17,7 +17,7 @@ RUN \
 
 RUN \
     curl -Ls "${MYSQL_DRIVER_DOWNLOAD_URL}" \
-        | tar -xz --directory "/opt/jira/WEB-INF/lib" \
+        | tar -xz --directory "/opt/jira/lib" \
             --strip-components=1 --no-same-owner \
             "mysql-connector-java-${MYSQL_VERSION}/mysql-connector-java-${MYSQL_VERSION}-bin.jar"
 
