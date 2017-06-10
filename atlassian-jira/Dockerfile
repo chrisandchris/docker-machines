@@ -1,5 +1,5 @@
 FROM ahaasler/jira-base:alpine-8u102b14-server-jre
-MAINTAINER Adrian Haasler García <dev@adrianhaasler.com>
+MAINTAINER Chrisandchris <null@example.org>
 
 # Configuration
 ENV JIRA_VERSION 7.3.6
@@ -16,9 +16,15 @@ RUN \
     && rm /tmp/jira.tar.gz
 
 RUN \
+    curl -Ls "${MYSQL_DRIVER_DOWNLOAD_URL}" \
+        | tar -xz --directory "/opt/jira/WEB-INF/lib" \
+            --strip-components=1 --no-same-owner \
+            "mysql-connector-java-${MYSQL_VERSION}/mysql-connector-java-${MYSQL_VERSION}-bin.jar"
+
+RUN \
     rm -rf /data/jira \
     && mkdir -p /data/jira \
-    && chown jira:jira /data/jira
+    && chown root:root /data/jira
 
 # Remove some env variables from setup, so we can set them inplace
 RUN \
@@ -26,12 +32,12 @@ RUN \
     && sed -i 's/JVM_MINIMUM_MEMORY=.*//g' ${JIRA_INSTALL}/bin/setenv.sh \
     && sed -i 's/JVM_MAXIMUM_MEMORY=.*//g' ${JIRA_INSTALL}/bin/setenv.sh
 
-COPY launch.sh /launch
+VOLUME ["/opt/jira", "/data/jira"]
 
+COPY launch.sh /launch
 RUN chmod +x /launch
 
 EXPOSE 8080
 
 WORKDIR /opt/jira
-
 ENTRYPOINT ["/launch"]
