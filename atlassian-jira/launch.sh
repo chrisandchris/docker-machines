@@ -1,5 +1,8 @@
 #!/bin/sh
 
+chmod 0777 /data
+chmod 0777 /data/jira
+
 # Backup conf/server.xml
 cp conf/server.xml conf/server.xml~
 
