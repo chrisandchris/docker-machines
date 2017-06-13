@@ -39,9 +39,12 @@ RUN \
 
 VOLUME ["/opt/confluence"]
 
+COPY launch.sh /launch
+RUN chmod +x /launch
+
 EXPOSE 8090
 EXPOSE 8091
 
 WORKDIR /opt/confluence
 
-CMD ["./bin/catalina.sh", "run"]
+ENTRYPOINT ["/launch"]
