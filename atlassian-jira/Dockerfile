@@ -26,7 +26,9 @@ RUN \
 RUN \
     rm -rf /data/jira \
     && mkdir -p /data/jira \
-    && chown root:root /data/jira
+    && chown root:root /data/jira \
+    && chmod 0777 /data && \
+    && chmod 0777 /data/jira
 
 # Remove some env variables from setup, so we can set them inplace
 RUN \

@@ -27,7 +27,9 @@ RUN \
 RUN \
     rm -rf /data/confluence \
     && mkdir -p /data/confluence \
-    && chown root:root /data/confluence
+    && chown root:root /data/confluence \
+    && chmod 0777 /data \
+    && chmod 0777 /data/confluence
 
 # Remove some env variables from setup, so we can set them inplace
 RUN \
