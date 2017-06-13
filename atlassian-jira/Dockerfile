@@ -36,7 +36,7 @@ RUN \
     && sed -i 's/JVM_MINIMUM_MEMORY=.*//g' ${JIRA_INSTALL}/bin/setenv.sh \
     && sed -i 's/JVM_MAXIMUM_MEMORY=.*//g' ${JIRA_INSTALL}/bin/setenv.sh
 
-VOLUME ["/opt/jira", "/data/jira"]
+VOLUME ["/opt/jira"]
 
 COPY launch.sh /launch
 RUN chmod +x /launch

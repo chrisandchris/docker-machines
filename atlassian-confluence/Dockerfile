@@ -37,7 +37,7 @@ RUN \
     && sed -i 's/JVM_MINIMUM_MEMORY=.*//g' /opt/confluence/bin/setenv.sh \
     && sed -i 's/JVM_MAXIMUM_MEMORY=.*//g' /opt/confluence/bin/setenv.sh
 
-VOLUME ["/opt/confluence", "/data/confluence"]
+VOLUME ["/opt/confluence"]
 
 EXPOSE 8090
 EXPOSE 8091
