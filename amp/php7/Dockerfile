@@ -12,7 +12,7 @@ RUN \
     apt-get update && apt-get upgrade -y \
     && apt-get install -y wget curl python-software-properties software-properties-common \
         zip unzip mysql-client \
-    && apt-get install -y locales && locale-gen ${LANG} \
+    && apt-get install -y locales vim && locale-gen ${LANG} \
     && echo "alias suw='sudo -u www-data'" > /root/.bash_aliases
 
 # APACHE
@@ -45,22 +45,18 @@ RUN \
     && sed -i "s/upload_max_filesize = 2M/upload_max_filesize = 64M/" /etc/php/7.0/apache2/php.ini \
     && mkdir -p /etc/php/7.0/cli/conf.d \
     && mkdir -p /etc/php/7.0/apache2/conf.d \
-    && echo "xdebug.remote_enable=1\n\
-xdebug.profiler_enable=0\n\
-xdebug.profiler_output_dir=/vagrant/cachegrind\n\
-xdebug.profiler_output_name=cachegrind.cli.%p.%t.out\n\
-xdebug.remote_connect_back=1\n\
-xdebug.remote_port=9000\n\
-xdebug.remote_log=/tmp/xdebug.log\n\
-xdebug.max_nesting_level=512" >> /etc/php/7.0/cli/conf.d/20-xdebug.ini \
-    && echo "xdebug.remote_enable=1\n\
-xdebug.profiler_enable=0\n\
-xdebug.profiler_output_dir=/vagrant/cachegrind\n\
-xdebug.profiler_output_name=cachegrind.apache.%p.%t.out\n\
-xdebug.remote_connect_back=1\n\
-xdebug.remote_port=9000\n\
-xdebug.remote_log=/tmp/xdebug.log\n\
-xdebug.max_nesting_level=512" >> /etc/php/7.0/apache2/conf.d/20-xdebug.ini
+    && echo "xdebug.remote_enable=1\
+xdebug.profiler_enable=0\
+xdebug.remote_connect_back=1\
+xdebug.remote_port=9000\
+xdebug.remote_log=/tmp/xdebug.log\
+xdebug.max_nesting_level=512" > /etc/php/7.0/cli/conf.d/20-xdebug.ini \
+    && echo "xdebug.remote_enable=1\
+xdebug.profiler_enable=0\
+xdebug.remote_connect_back=1\
+xdebug.remote_port=9000\
+xdebug.remote_log=/tmp/xdebug.log\
+xdebug.max_nesting_level=512" > /etc/php/7.0/apache2/conf.d/20-xdebug.ini
 
 RUN \
     php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
