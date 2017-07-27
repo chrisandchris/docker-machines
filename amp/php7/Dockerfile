@@ -11,7 +11,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN \
     apt-get update && apt-get upgrade -y \
     && apt-get install -y wget curl python-software-properties software-properties-common \
-        zip unzip mysql-client vim \
+        zip unzip mysql-client vim sudo \
     && apt-get install -y locales && locale-gen ${LANG} \
     && locale-gen en_US.UTF-8 && locale-gen de_CH.UTF-8 \
     && echo "alias suw='sudo -u www-data'" > /root/.bash_aliases
