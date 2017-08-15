@@ -50,7 +50,10 @@ RUN \
 RUN \
     echo "xdebug.remote_enable=1" >> /etc/php/7.0/cli/conf.d/20-xdebug.ini \
     && echo "xdebug.profiler_output_name=cachegrind.apache.%p.%t.out" >> /etc/php/7.0/cli/conf.d/20-xdebug.ini \
+    && echo "xdebug.remote_enable=1" >> /etc/php/7.0/cli/conf.d/20-xdebug.ini \
     && echo "xdebug.remote_connect_back=1" >> /etc/php/7.0/cli/conf.d/20-xdebug.ini \
+    && echo "xdebug.remote_autostart=1" >> /etc/php/7.0/cli/conf.d/20-xdebug.ini \
+    && echo "xdebug.remote_host=172.20.0.3" >> /etc/php/7.0/cli/conf.d/20-xdebug.ini \
     && echo "xdebug.remote_port=9000" >> /etc/php/7.0/cli/conf.d/20-xdebug.ini \
     && echo "xdebug.remote_log=/tmp/xdebug.log" >> /etc/php/7.0/cli/conf.d/20-xdebug.ini \
     && echo "xdebug.max_nesting_level=512" >> /etc/php/7.0/cli/conf.d/20-xdebug.ini \
@@ -74,6 +77,14 @@ RUN \
     && wget https://phar.phpunit.de/phpunit-5.7.phar -O /usr/local/bin/phpunit \
     && chmod +x /usr/local/bin/phpunit
 
+# start in www-data as home
 WORKDIR /var/www
 
-CMD service apache2 start && tail -f /var/log/apache2/error.log
+# added host user to www-data, because /var/www is owned by www-data
+RUN usermod -u 1000 www-data
+RUN groupmod -g 1000 www-data
+
+# start apache, start cron, tail follow apache error log
+CMD service apache2 start \
+    && cron \
+    && tail -f /var/log/apache2/error.log
