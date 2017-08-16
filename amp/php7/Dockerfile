@@ -77,6 +77,12 @@ RUN \
     && wget https://phar.phpunit.de/phpunit-5.7.phar -O /usr/local/bin/phpunit \
     && chmod +x /usr/local/bin/phpunit
 
+# install node
+RUN \
+    curl -sL https://deb.nodesource.com/setup_8.x | bash - \
+    && sudo apt-get install -y nodejs \
+    && npm install -g bower
+
 # start in www-data as home
 WORKDIR /var/www
 

@@ -86,3 +86,9 @@ RUN \
         texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra \
         texlive-latex-base texlive-lang-german \
         inkscape
+
+# install node
+RUN \
+    curl -sL https://deb.nodesource.com/setup_8.x | bash -
+    && sudo apt-get install -y nodejs
+    && npm install -g bower
