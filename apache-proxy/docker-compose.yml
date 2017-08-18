@@ -1,0 +1,12 @@
+version: '2.0'
+
+services:
+  apache:
+    image: chrisandchris/apache-proxy
+    volumes:
+      - ./virtual-hosts:/etc/apache2/sites-enabled
+      - ./letsencrypt:/etc/letsencrypt
+      - ./www:/var/www
+    ports:
+      - 80:80
+      - 443:443
