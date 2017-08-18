@@ -14,7 +14,7 @@ ENV LANG=${OS_LOCALE} \
     NOTIFY_MAIL=null@example.org
 
 RUN    \
-    apt-get install -y software-properties-common python-software-properties vim \
+    apt-get install -y software-properties-common python-software-properties vim incron \
     && add-apt-repository -y ppa:ondrej/apache2 \
     && apt-get update \
         && apt-get install -y curl apache2 python-mod-pywebsocket \
@@ -38,6 +38,13 @@ RUN \
     && echo "0 * * * * certbot --renew" >> /tmp/crontab \
     && echo "" >> /tmp/crontab \
     && crontab /tmp/crontab
+
+RUN \
+    rm -f /etc/incron.allow
+    && echo "/etc/apache2/sites-enabled IN_MODIFY service apache2 force-reload" >> /tmp/incrontab \
+    && echo "/etc/letsencrypt/live IN_MODIFY service apache2 force-reload" >> /tmp/incrontab \
+    && echo "" >> /tmp/incrontab \
+    && incrontab /tmp/incrontab
 
 COPY entrypoint.sh /sbin/entrypoint.sh
 RUN \
