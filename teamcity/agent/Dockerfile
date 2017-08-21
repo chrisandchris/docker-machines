@@ -9,7 +9,7 @@ ENV COMPOSER_HOME=/composer
 RUN \
     apt-get update && apt-get upgrade -y \
     && apt-get install -y wget curl python-software-properties software-properties-common \
-        zip unzip mysql-client
+        zip unzip mysql-client git
 
 # install vagrant and plugins
 RUN \
