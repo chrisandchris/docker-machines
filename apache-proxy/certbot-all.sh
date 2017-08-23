@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [ ! -f /etc/apache2/sites-enabled/.hosts ] ; then
-    echo "No hosts file found"
+    echo "No hosts file found, abort."
     exit 1
 fi
 
@@ -10,5 +10,9 @@ do
     echo "### ---"
     echo "Handle $line"
     echo ""
-    certbot --renew-with-new-domains --apache -n -d "$line"
+    certbot-auto --renew-with-new-domains --apache -n -d "$line"
+    echo ""
+    echo "### ---"
 done
+
+service apache2 force-reload

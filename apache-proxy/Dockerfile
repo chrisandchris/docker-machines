@@ -34,7 +34,7 @@ RUN    \
 RUN \
     wget https://dl.eff.org/certbot-auto -O /usr/local/bin/certbot-auto \
     && chmod a+x /usr/local/bin/certbot-auto \
-    && echo "0 * * * * certbot-all" >> /tmp/crontab \
+    && echo "0 */4 * * * certbot-all" >> /tmp/crontab \
     && echo "" >> /tmp/crontab \
     && crontab /tmp/crontab
 
