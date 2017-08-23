@@ -35,16 +35,9 @@ RUN \
     add-apt-repository ppa:certbot/certbot \
     && apt-get update \
     && apt-get install -y python-certbot-apache \
-    && echo "0 * * * * certbot --renew" >> /tmp/crontab \
+    && echo "0 * * * * certbot --renew-with-new-domains" >> /tmp/crontab \
     && echo "" >> /tmp/crontab \
     && crontab /tmp/crontab
-
-RUN \
-    rm -f /etc/incron.allow
-    && echo "/etc/apache2/sites-enabled IN_MODIFY service apache2 force-reload" >> /tmp/incrontab \
-    && echo "/etc/letsencrypt/live IN_MODIFY service apache2 force-reload" >> /tmp/incrontab \
-    && echo "" >> /tmp/incrontab \
-    && incrontab /tmp/incrontab
 
 COPY entrypoint.sh /sbin/entrypoint.sh
 RUN \
