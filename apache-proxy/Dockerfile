@@ -14,7 +14,7 @@ ENV LANG=${OS_LOCALE} \
     NOTIFY_MAIL=null@example.org
 
 RUN    \
-    apt-get install -y software-properties-common python-software-properties vim incron \
+    apt-get install -y software-properties-common python-software-properties vim incron wget \
     && add-apt-repository -y ppa:ondrej/apache2 \
     && apt-get update \
         && apt-get install -y curl apache2 python-mod-pywebsocket \
@@ -32,16 +32,18 @@ RUN    \
     && ln -sf /dev/stderr /var/log/apache2/other_vhosts_access.log
 
 RUN \
-    add-apt-repository ppa:certbot/certbot \
-    && apt-get update \
-    && apt-get install -y python-certbot-apache \
-    && echo "0 * * * * certbot --renew-with-new-domains" >> /tmp/crontab \
+    wget https://dl.eff.org/certbot-auto -O /usr/local/bin/certbot-auto \
+    && chmod a+x /usr/local/bin/certbot-auto \
+    && echo "0 * * * * certbot-all" >> /tmp/crontab \
     && echo "" >> /tmp/crontab \
     && crontab /tmp/crontab
 
+COPY certbot-all.sh /usr/local/bin/certbot-all
 COPY entrypoint.sh /sbin/entrypoint.sh
 RUN \
-    chmod 755 /sbin/entrypoint.sh
+    chmod 755 /sbin/entrypoint.sh \
+    && chmod a+x /usr/local/bin/certbot-all
+
 COPY ./configs/apache2.conf ${APACHE_CONF_DIR}/apache2.conf
 
 WORKDIR /var/www
