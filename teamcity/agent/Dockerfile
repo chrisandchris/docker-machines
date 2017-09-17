@@ -34,22 +34,9 @@ RUN \
     && unzip /tmp/packer.zip -d /usr/local/bin \
     && chmod +x /usr/local/bin/packer
 
-# install docker, docker-compose
+# install docker-compose
 RUN \
-    apt-get install -y \
-           apt-transport-https \
-           ca-certificates \
-           curl \
-           software-properties-common \
-           lxc \
-   && curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - \
-   && add-apt-repository \
-         "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-         $(lsb_release -cs) \
-         stable" \
-    && apt-get update \
-    && apt-get install -y docker-ce \
-    && curl -L https://github.com/docker/compose/releases/download/1.13.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose \
+    curl -L https://github.com/docker/compose/releases/download/1.13.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose \
     && chmod +x /usr/local/bin/docker-compose \
     && echo "@reboot service docker start" >> /etc/crontab
 
@@ -92,3 +79,5 @@ RUN \
     curl -sL https://deb.nodesource.com/setup_8.x | bash - \
     && apt-get install -y nodejs \
     && npm install -g bower
+
+COPY run-docker.sh /services/run-docker.sh
