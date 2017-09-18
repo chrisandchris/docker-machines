@@ -51,7 +51,7 @@ RUN \
     && wget https://phar.phpunit.de/phpunit-5.7.phar -O /usr/local/bin/phpunit \
     && chmod +x /usr/local/bin/phpunit \
     && mkdir /composer \
-    && chmod 0777 /composer
+    && chmod 0755 /composer
 
 # install sphinx, latex
 RUN \
