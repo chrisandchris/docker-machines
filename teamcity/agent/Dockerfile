@@ -50,7 +50,7 @@ RUN \
     && php -r "unlink('composer-setup.php');" \
     && wget https://phar.phpunit.de/phpunit-5.7.phar -O /usr/local/bin/phpunit \
     && chmod +x /usr/local/bin/phpunit \
-    && mkdir /composer \
+    && mkdir -p /composer \
     && chmod 0755 /composer
 
 # install sphinx, latex
