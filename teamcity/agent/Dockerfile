@@ -4,21 +4,13 @@ MAINTAINER chrisandchris <>
 
 ENV LANG=en_US.UTF-8
 ENV COMPOSER_HOME=/composer
+ENV DOCKER_COMPOSE_VERSION=1.16.1
 
 # base software packages, update system
 RUN \
     apt-get update && apt-get upgrade -y \
     && apt-get install -y wget curl python-software-properties software-properties-common \
         zip unzip mysql-client git
-
-# install vagrant and plugins
-RUN \
-    wget https://releases.hashicorp.com/vagrant/1.9.1/vagrant_1.9.1_x86_64.deb -O /tmp/vagrant.deb \
-    && dpkg -i /tmp/vagrant.deb \
-    && vagrant plugin install vagrant-aws \
-    && vagrant plugin install vagrant-scp \
-    && wget https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box -O /tmp/dummy.img \
-    && vagrant box add dummy /tmp/dummy.img
 
 # install aws-cli
 RUN \
@@ -28,17 +20,12 @@ RUN \
     && rm -rf awscli-* \
     && aws --version
 
-# install packer
-RUN \
-    wget https://releases.hashicorp.com/packer/0.12.2/packer_0.12.2_linux_amd64.zip -O /tmp/packer.zip \
-    && unzip /tmp/packer.zip -d /usr/local/bin \
-    && chmod +x /usr/local/bin/packer
-
 # install docker-compose
 RUN \
-    curl -L https://github.com/docker/compose/releases/download/1.13.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose \
+    curl -L https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/docker-compose-`uname -s`-`uname -m` \
+        > /usr/local/bin/docker-compose \
     && chmod +x /usr/local/bin/docker-compose \
-    && echo "@reboot service docker start" >> /etc/crontab
+    && echo "127.0.0.1 localunixsocket.local" >> /etc/hosts
 
 # generate localse
 RUN \
