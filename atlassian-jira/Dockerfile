@@ -2,9 +2,9 @@ FROM ahaasler/jira-base:alpine-8u102b14-server-jre
 MAINTAINER Chrisandchris <null@example.org>
 
 # Configuration
-ENV JIRA_VERSION 7.4.3
+ENV JIRA_VERSION 7.5.0
 ENV JIRA_INSTALL /opt/jira
-ENV MYSQL_VERSION             5.1.38
+ENV MYSQL_VERSION             5.1.44
 ENV MYSQL_DRIVER_DOWNLOAD_URL http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-${MYSQL_VERSION}.tar.gz
 
 # Download and install jira in /opt with proper permissions and clean unnecessary files
