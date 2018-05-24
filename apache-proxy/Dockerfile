@@ -1,4 +1,4 @@
-FROM ubuntu:zesty
+FROM ubuntu:latest
 
 ENV OS_LOCALE="en_US.UTF-8"
 
@@ -14,7 +14,7 @@ ENV LANG=${OS_LOCALE} \
     NOTIFY_MAIL=null@example.org
 
 RUN    \
-    apt-get install -y software-properties-common python-software-properties vim incron wget \
+    apt-get install -y software-properties-common vim incron wget \
     && add-apt-repository -y ppa:ondrej/apache2 \
     && apt-get update \
         && apt-get install -y curl apache2 python-mod-pywebsocket \
